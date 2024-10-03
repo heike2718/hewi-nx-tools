@@ -1,0 +1,42 @@
+import { inject, Injectable } from "@angular/core";
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { map, of, switchMap, tap, catchError } from "rxjs";
+import { Router } from '@angular/router';
+import { <%= className %>Actions } from './<%= relativeFileName %>.actions';
+import { <%= className %>HttpService } from '../<%= relativeFileName %>-http.service;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AuthEffects {
+
+      #actions = inject(Actions);
+      #router = inject(Router);
+      #httpService = inject(<%= className %>HttpService);
+
+    /**
+      * example for a bckend call
+      */
+   loadAll$ = createEffect(() => {
+
+        return this.#actions.pipe(
+            ofType(<%= className %>Actions.lOAD_ALL),
+            switchMap(() => this.#httpService.loadAll()),
+            map((dtos) => <%= className %>Actions.aLL_LOADED({ dtos })),
+            catchError((error) => {
+              console.error('Error', error);
+              return of(<%= className %>Actions.lOAD_FAILURE({ error }));
+            })
+        );
+    });
+
+    /**
+      * example for terminating effect
+      */
+      dtoUnselected$ = createEffect(() =>
+        this.#actions.pipe(
+            ofType(<%= className %>Actions.dTO_UNSELECTED),
+            tap(() => this.#router.navigateByUrl('/'))
+        ), { dispatch: false });
+
+}

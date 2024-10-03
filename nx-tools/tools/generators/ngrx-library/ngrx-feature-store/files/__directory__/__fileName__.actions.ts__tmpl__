@@ -1,0 +1,14 @@
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
+
+export const <%= name %>Actions = createActionGroup({
+      source: '<%= name %>',
+    events: {
+        'LOAD_ALL': emptyProps(),
+        'ALL_LOADED': props<{ dtos: string[] }>(),
+        'LOAD_FAILURE': props<{ error: Error }>(),
+        'SELECT_DTO': props<{ id: string }>(),
+        'DTO_SELECTED': props<{ dto: string }>(),
+        'DTO_UNSELECTED': emptyProps()
+    }
+    
+});

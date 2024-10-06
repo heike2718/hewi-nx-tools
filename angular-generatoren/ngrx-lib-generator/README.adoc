@@ -1,0 +1,35 @@
+= NGRX Library Generator
+
+ngrx_lib_generator
+
+
+
+{feature-path}
+apps/profil-app/src/app/auth
+
+
+
+/model
+
+
+
+
+apps/profil-app/src/app/auth/model/src
+
+{feature-name}
+auth
+
+profil-app-src-app-auth-model
+
+{tags}
+"domain:xxx","type:model"
+
+{domain-name}
+
+{prefix}
+
+{display-name}
+in library-path alle / durch - ersetzen
+apps-profil-app-src-app-auth-model
+
+profil-app-src-app-auth-  model

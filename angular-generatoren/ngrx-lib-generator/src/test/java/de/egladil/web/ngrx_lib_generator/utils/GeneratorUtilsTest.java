@@ -12,7 +12,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import de.egladil.web.ngrx_lib_generator.GeneratorOptions;
-import de.egladil.web.ngrx_lib_generator.utils.GeneratorUtils;
 
 /**
  * GeneratorUtilsTest
@@ -83,5 +82,4 @@ public class GeneratorUtilsTest {
 		assertEquals("[\"domain:profil\", \"type:model\"]",
 			result);
 	}
-
 }

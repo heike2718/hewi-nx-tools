@@ -4,11 +4,13 @@
 // =====================================================
 package de.egladil.web.ngrx_lib_generator.utils;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import de.egladil.web.ngrx_lib_generator.GeneratorOptions;
+import de.egladil.web.ngrx_lib_generator.IGeneratorStrategy;
 
 /**
  * GeneratorUtils
@@ -90,5 +92,43 @@ public class GeneratorUtils {
 
 		sb.append("]");
 		return sb.toString();
+	}
+
+	public static String transformToCamelCase(final String input) {
+
+		String[] parts = input.split("[_\\s]+");
+
+		StringBuffer camelCaseString = new StringBuffer();
+
+		for (String part : parts) {
+
+			// Capitalize the first letter and add the rest in lowercase
+			if (part.length() > 0) {
+
+				camelCaseString.append(part.substring(0, 1).toUpperCase())
+					.append(part.substring(1).toLowerCase());
+			}
+		}
+
+		return camelCaseString.toString();
+
+	}
+
+	public static String getLibraryRootPath(final IGeneratorStrategy strategy) {
+
+		GeneratorOptions options = strategy.getOptions();
+
+		return options.getNxWorkspaceDir() + "/" + options.getFeatureParentPath() + "/" + options.getFeatureName() + "/"
+			+ strategy.getLibraryType().toString();
+	}
+
+	public static String getTsConfigBaseEntry(final IGeneratorStrategy strategy) {
+
+		GeneratorOptions options = strategy.getOptions();
+
+		String libAlias = options.getLibAliasPrefix() + "/" + options.getFeatureName() + "/" + strategy.getLibraryType().toString();
+		String path = options.getFeatureParentPath() + "/" + options.getFeatureName() + "/" + strategy.getLibraryType().toString()
+			+ "/src/index.ts";
+		return MessageFormat.format(IPlaceholders.MESSAGE_FORMAT_PATTERN_LIB_ALIAS, new Object[] { libAlias, path });
 	}
 }

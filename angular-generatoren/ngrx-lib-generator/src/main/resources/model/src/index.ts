@@ -1,1 +1,1 @@
-export * from './lib/#feature-name#.model';
+export * from './lib/#feature.name#.model';

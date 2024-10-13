@@ -12,3 +12,5 @@ ObjectStore/
 *.dvi
 *.pdf
 *.png
+
+/src/main/resources/data/ttt/

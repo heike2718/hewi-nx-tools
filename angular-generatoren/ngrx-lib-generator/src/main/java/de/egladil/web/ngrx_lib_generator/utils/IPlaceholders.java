@@ -26,11 +26,21 @@ public interface IPlaceholders {
 	String FEATURE_NAME = "#feature-name#";
 
 	/**
+	 * Der State zu einem Feature ist ein Interface, das camel case geschrieben werden sollte.
+	 */
+	String FEATURE_NAME_CAMEL_CASE = "#feature-name-cc#";
+
+	/**
 	 * Lib-Name in den Config-Files project.json und jest.config.ts<br>
 	 * <br>
 	 * Beispiel: profil-app-src-app-auth-model
 	 */
 	String LIB_NAME = "#lib-name#";
+
+	/**
+	 * Präfix der Library in tsconfig.base.json. Z.B. (at)profil-app
+	 */
+	String LIB_ALIAS_PREFIX = "#lib-alias-prefix#";
 
 	/**
 	 * Das ist der relative Pfad im nx-Workspace, unter dem die 3 zu generierenden Libs api, data und model liegen sollen. <br>

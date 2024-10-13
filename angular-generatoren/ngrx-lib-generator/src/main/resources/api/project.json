@@ -1,10 +1,10 @@
 {
-  "name": "profil-app-src-app-auth-api",
+  "name": "#lib-name#",
   "$schema": "#cd-up#node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "#feature-root-path#/api/src",
-  "prefix": "auth",
+  "prefix": "#feature-name#",
   "projectType": "library",
-  "tags": ["domain:profil", "type:api"],
+  "tags": #tags#,
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",

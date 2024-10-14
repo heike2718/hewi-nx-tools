@@ -6,8 +6,6 @@ package de.egladil.web.ngrx_lib_generator;
 
 import java.util.Arrays;
 
-import de.egladil.web.ngrx_lib_generator.GeneratorOptions;
-
 /**
  * TestUtils
  */

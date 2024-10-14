@@ -20,6 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import de.egladil.web.ngrx_lib_generator.impl.ApiGeneratorStrategy;
 import de.egladil.web.ngrx_lib_generator.impl.DataGeneratorStrategy;
 import de.egladil.web.ngrx_lib_generator.impl.ModelGeneratorStrategy;
 import de.egladil.web.ngrx_lib_generator.utils.GeneratorUtils;
@@ -69,7 +70,7 @@ public class DataGeneratorTest {
 			// String workDir = "/home/heike/git/authenticationprovider/frontend/auth-app-profil-app-ws";
 
 			GeneratorOptions options = TestUtils.createGeneratorOptions(workDir);
-			ModelGeneratorStrategy strategy = new ModelGeneratorStrategy(options);
+			IGeneratorStrategy strategy = new ModelGeneratorStrategy(options);
 
 			// Act
 			String path = generator.generateSpecialLib(strategy);
@@ -112,11 +113,20 @@ public class DataGeneratorTest {
 				IOUtils.copy(in, sw, StandardCharsets.UTF_8);
 
 				String content = sw.toString();
-				assertTrue(content.contains("\"$schema\": \"../../../../../../node_modules/nx/schemas/project-schema.json\""));
+				assertTrue(content.contains("\"name\": \"profil-app-src-app-auth-model\","));
+				assertTrue(content.contains("\"$schema\": \"../../../../../../node_modules/nx/schemas/project-schema.json\","));
+				assertTrue(content.contains("\"sourceRoot\": \"apps/profil-app/src/app/auth/model/src\","));
+				assertTrue(content.contains("\"prefix\": \"auth\","));
+				assertTrue(content.contains("\"projectType\": \"library\","));
+				assertTrue(content.contains("\"tags\": [\"domain:profil\", \"type:model\"],"));
+				assertTrue(content.contains("\"targets\": {"));
+				assertTrue(content.contains("\"test\": {"));
+				assertTrue(content.contains("\"executor\": \"@nx/jest:jest\","));
+				assertTrue(content.contains("\"outputs\": [\"{workspaceRoot}/coverage/{projectRoot}\"],"));
+				assertTrue(content.contains("\"options\": {"));
 				assertTrue(content.contains("\"jestConfig\": \"apps/profil-app/src/app/auth/model/jest.config.ts\""));
-				assertTrue(content.contains("\"name\": \"profil-app-src-app-auth-model\""));
-				assertTrue(content.contains("\"tags\": [\"domain:profil\", \"type:model\"]"));
-				assertTrue(content.contains("\"sourceRoot\": \"apps/profil-app/src/app/auth/model/src\""));
+				assertTrue(content.contains("\"lint\": {"));
+				assertTrue(content.contains("\"executor\": \"@nx/eslint:lint\""));
 			}
 
 			File esLintConfig = new File(path + "/eslint.config.js");
@@ -292,11 +302,20 @@ public class DataGeneratorTest {
 				IOUtils.copy(in, sw, StandardCharsets.UTF_8);
 
 				String content = sw.toString();
-				assertTrue(content.contains("\"$schema\": \"../../../../../../node_modules/nx/schemas/project-schema.json\""));
+				assertTrue(content.contains("\"name\": \"profil-app-src-app-auth-data\","));
+				assertTrue(content.contains("\"$schema\": \"../../../../../../node_modules/nx/schemas/project-schema.json\","));
+				assertTrue(content.contains("\"sourceRoot\": \"apps/profil-app/src/app/auth/data/src\","));
+				assertTrue(content.contains("\"prefix\": \"auth\","));
+				assertTrue(content.contains("\"projectType\": \"library\","));
+				assertTrue(content.contains("\"tags\": [\"domain:profil\", \"type:data\"],"));
+				assertTrue(content.contains("\"targets\": {"));
+				assertTrue(content.contains("\"test\": {"));
+				assertTrue(content.contains("\"executor\": \"@nx/jest:jest\","));
+				assertTrue(content.contains("\"outputs\": [\"{workspaceRoot}/coverage/{projectRoot}\"],"));
+				assertTrue(content.contains("\"options\": {"));
 				assertTrue(content.contains("\"jestConfig\": \"apps/profil-app/src/app/auth/data/jest.config.ts\""));
-				assertTrue(content.contains("\"name\": \"profil-app-src-app-auth-data\""));
-				assertTrue(content.contains("\"tags\": [\"domain:profil\", \"type:data\"]"));
-				assertTrue(content.contains("\"sourceRoot\": \"apps/profil-app/src/app/auth/data/src\""));
+				assertTrue(content.contains("\"lint\": {"));
+				assertTrue(content.contains("\"executor\": \"@nx/eslint:lint\""));
 			}
 
 			File esLintConfig = new File(path + "/eslint.config.js");
@@ -503,6 +522,191 @@ public class DataGeneratorTest {
 				assertTrue(content.contains("const headers = new HttpHeaders().set('Accept', 'application/json');"));
 				assertTrue(content.contains("return this.#http.get<UserDto[]>(url, { headers });"));
 			}
+		}
+	}
+
+	@Nested
+	class ApiGeneratorStrategyTests {
+
+		@Test
+		void shouldGenerateTheApiLib_onlyDryRun() {
+
+			// Arrange
+			Generator generator = new Generator();
+			assertTrue(generator.getProtokoll().isEmpty());
+
+			String userHome = System.getProperty("user.home");
+			String workDir = userHome + "/tmp/" + UUID.randomUUID().toString();
+			// String workDir = "/home/heike/git/authenticationprovider/frontend/auth-app-profil-app-ws";
+
+			GeneratorOptions options = TestUtils.createGeneratorOptions(workDir).withDryRun(true);
+
+			// Act
+			String libRootPth = generator.generateSpecialLib(new ApiGeneratorStrategy(options));
+
+			// Assert
+			List<String> protokoll = generator.getProtokoll();
+			assertNotNull(protokoll);
+
+			System.out.println(protokoll);
+			assertEquals(workDir + "/apps/profil-app/src/app/auth/api", libRootPth);
+			assertTrue(new File(libRootPth).isDirectory());
+		}
+
+		@Test
+		void shouldGenerateTheApiLib() throws Exception {
+
+			// Arrange
+			Generator generator = new Generator();
+			assertTrue(generator.getProtokoll().isEmpty());
+
+			String userHome = System.getProperty("user.home");
+			String workDir = userHome + "/tmp/" + UUID.randomUUID().toString();
+			// String workDir = "/home/heike/git/authenticationprovider/frontend/auth-app-profil-app-ws";
+
+			GeneratorOptions options = TestUtils.createGeneratorOptions(workDir);
+			IGeneratorStrategy strategy = new ApiGeneratorStrategy(options);
+
+			// Act
+			String path = generator.generateSpecialLib(strategy);
+
+			// Assert
+			List<String> protokoll = generator.getProtokoll();
+			assertNotNull(protokoll);
+
+			System.out.println(protokoll);
+
+			assertEquals(workDir + "/apps/profil-app/src/app/auth/api", path);
+			assertTrue(new File(path).isDirectory());
+
+			assertEquals("\"@profil-app/auth/api\": [\"apps/profil-app/src/app/auth/api/src/index.ts\"],",
+				GeneratorUtils.getTsConfigBaseEntry(strategy));
+
+			// /home/heike/tmp/d901decd-e35c-402a-b0f0-dc19502e480a/apps/profil-app/src/app/auth/model
+			File jestConfigFile = new File(path + "/jest.config.ts");
+			assertTrue(jestConfigFile.isFile());
+			assertTrue(jestConfigFile.canRead());
+
+			try (InputStream in = new FileInputStream(jestConfigFile); StringWriter sw = new StringWriter()) {
+
+				IOUtils.copy(in, sw, StandardCharsets.UTF_8);
+
+				String content = sw.toString();
+				assertTrue(content.contains("profil-app-src-app-auth-api"));
+				assertTrue(content.contains("'../../../../../../coverage/apps/profil-app/src/app/auth/api'"));
+				assertTrue(content.contains("'../../../../../../jest.preset.js'"));
+
+			}
+
+			File projectJson = new File(path + "/project.json");
+
+			assertTrue(projectJson.isFile());
+			assertTrue(projectJson.canRead());
+
+			try (InputStream in = new FileInputStream(projectJson); StringWriter sw = new StringWriter()) {
+
+				IOUtils.copy(in, sw, StandardCharsets.UTF_8);
+
+				String content = sw.toString();
+				assertTrue(content.contains("\"name\": \"profil-app-src-app-auth-api\","));
+				assertTrue(content.contains("\"$schema\": \"../../../../../../node_modules/nx/schemas/project-schema.json\","));
+				assertTrue(content.contains("\"sourceRoot\": \"apps/profil-app/src/app/auth/api/src\","));
+				assertTrue(content.contains("\"prefix\": \"auth\","));
+				assertTrue(content.contains("\"projectType\": \"library\","));
+				assertTrue(content.contains("\"tags\": [\"domain:profil\", \"type:api\"],"));
+				assertTrue(content.contains("\"targets\": {"));
+				assertTrue(content.contains("\"test\": {"));
+				assertTrue(content.contains("\"executor\": \"@nx/jest:jest\","));
+				assertTrue(content.contains("\"outputs\": [\"{workspaceRoot}/coverage/{projectRoot}\"],"));
+				assertTrue(content.contains("\"options\": {"));
+				assertTrue(content.contains("\"jestConfig\": \"apps/profil-app/src/app/auth/api/jest.config.ts\""));
+				assertTrue(content.contains("\"lint\": {"));
+				assertTrue(content.contains("\"executor\": \"@nx/eslint:lint\""));
+			}
+
+			File esLintConfig = new File(path + "/eslint.config.js");
+			assertTrue(esLintConfig.isFile());
+			assertTrue(esLintConfig.canRead());
+
+			try (InputStream in = new FileInputStream(esLintConfig); StringWriter sw = new StringWriter()) {
+
+				IOUtils.copy(in, sw, StandardCharsets.UTF_8);
+
+				String content = sw.toString();
+				assertTrue(content.contains("const baseConfig = require('../../../../../../eslint.config.js');"));
+
+				int first = content.indexOf("prefix: 'auth'");
+				assertTrue(first > 0);
+
+				content = content.substring(first + "prefix: 'auth'".length());
+				int second = content.indexOf("prefix: 'auth'");
+				assertTrue(second > 0);
+			}
+
+			File tsconfig = new File(path + "/tsconfig.json");
+			assertTrue(tsconfig.isFile());
+			assertTrue(tsconfig.canRead());
+
+			try (InputStream in = new FileInputStream(tsconfig); StringWriter sw = new StringWriter()) {
+
+				IOUtils.copy(in, sw, StandardCharsets.UTF_8);
+
+				String content = sw.toString();
+				assertTrue(content.contains("\"extends\": \"../../../../../../tsconfig.base.json\","));
+			}
+
+			File tsconfigLib = new File(path + "/tsconfig.lib.json");
+			assertTrue(tsconfigLib.isFile());
+			assertTrue(tsconfigLib.canRead());
+
+			try (InputStream in = new FileInputStream(tsconfigLib); StringWriter sw = new StringWriter()) {
+
+				IOUtils.copy(in, sw, StandardCharsets.UTF_8);
+
+				String content = sw.toString();
+				assertTrue(content.contains("\"outDir\": \"../../../../../../dist/out-tsc\","));
+			}
+
+			File tsconfigSpec = new File(path + "/tsconfig.spec.json");
+			assertTrue(tsconfigSpec.isFile());
+			assertTrue(tsconfigSpec.canRead());
+
+			try (InputStream in = new FileInputStream(tsconfigSpec); StringWriter sw = new StringWriter()) {
+
+				IOUtils.copy(in, sw, StandardCharsets.UTF_8);
+
+				String content = sw.toString();
+				assertTrue(content.contains("\"outDir\": \"../../../../../../dist/out-tsc\","));
+			}
+
+			File testSetup = new File(path + "/src/test-setup.ts");
+			assertTrue(testSetup.isFile());
+			assertTrue(testSetup.canRead());
+
+			// File index = new File(path + "/src/index.ts");
+			// assertTrue(index.isFile());
+			// assertTrue(index.canRead());
+			//
+			// try (InputStream in = new FileInputStream(index); StringWriter sw = new StringWriter()) {
+			//
+			// IOUtils.copy(in, sw, StandardCharsets.UTF_8);
+			//
+			// String content = sw.toString();
+			// assertTrue(content.contains("export * from './lib/auth.model';"));
+			// }
+
+			// File model = new File(path + "/src/lib/auth.model.ts");
+			// assertTrue(model.isFile());
+			// assertTrue(model.canRead());
+			//
+			// try (InputStream in = new FileInputStream(model); StringWriter sw = new StringWriter()) {
+			//
+			// IOUtils.copy(in, sw, StandardCharsets.UTF_8);
+			//
+			// String content = sw.toString();
+			// assertTrue(content.contains("// put your DTOs and other state model objects into this file"));
+			// assertTrue(content.contains("export interface UserDto {"));
+			// }
 		}
 	}
 }
